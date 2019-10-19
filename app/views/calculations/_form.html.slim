@@ -1,0 +1,21 @@
+= form_for @calculation do |f|
+  - if @calculation.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@calculation.errors.count, "error")} prohibited this calculation from being saved:"
+      ul
+        - @calculation.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :annual_income
+    = f.number_field :annual_income
+  .field
+    = f.label :capital_gains
+    = f.number_field :capital_gains
+  .field
+    = f.label :deduction
+    = f.number_field :deduction
+  .field
+    = f.label :dependent_children
+    = f.number_field :dependent_children
+  .actions = f.submit

@@ -1,0 +1,27 @@
+h1 Listing calculations
+
+table
+  thead
+    tr
+      th Annual income
+      th Capital gains
+      th Deduction
+      th Dependent children
+      th
+      th
+      th
+
+  tbody
+    - @calculations.each do |calculation|
+      tr
+        td = calculation.annual_income
+        td = calculation.capital_gains
+        td = calculation.deduction
+        td = calculation.dependent_children
+        td = link_to 'Show', calculation
+        td = link_to 'Edit', edit_calculation_path(calculation)
+        td = link_to 'Destroy', calculation, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Calculation', new_calculation_path

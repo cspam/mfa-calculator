@@ -1,0 +1,18 @@
+p#notice = notice
+
+p
+  strong Annual income:
+  = @calculation.annual_income
+p
+  strong Capital gains:
+  = @calculation.capital_gains
+p
+  strong Deduction:
+  = @calculation.deduction
+p
+  strong Dependent children:
+  = @calculation.dependent_children
+
+=> link_to 'Edit', edit_calculation_path(@calculation)
+'|
+=< link_to 'Back', calculations_path

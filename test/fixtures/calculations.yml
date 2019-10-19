@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  annual_income: 1
+  capital_gains: 1
+  deduction: 1
+  dependent_children: 1
+
+two:
+  annual_income: 1
+  capital_gains: 1
+  deduction: 1
+  dependent_children: 1
