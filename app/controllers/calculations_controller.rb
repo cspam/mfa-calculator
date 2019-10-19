@@ -10,6 +10,22 @@ class CalculationsController < ApplicationController
   # GET /calculations/1
   # GET /calculations/1.json
   def show
+    # NOTES: You can access the information at this point like:
+    # @calculation.annual_income
+    # @calculation.capital_gains
+    # @calculation.deduction
+    # @calculation.dependent_children
+
+    # to keep controller small, we create a service object, which lives in app/services/calculation_service.rb,
+    # and put the bulk of the logic in there
+    cs = CalculationService.new(@calculation.annual_income, @calculation.capital_gains, @calculation.deduction, @calculation.dependent_children)
+
+    # just some demonstrative examples
+    @m4a_cost = cs.get_m4a_2020_cost
+    @current_cost = cs.get_current_hellworld_cost
+
+    # these variables can now be displayed in the page just by using @the_variable_name_you_want
+    # (note that the #create action we are in renders app/views/calculations/show.html.slim)
   end
 
   # GET /calculations/new

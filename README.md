@@ -1,24 +1,15 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+You'll want Ruby 2.6.5 and Rails 6.0.0.
 
-Things you may want to cover:
+Clone this app, `cd` into the directory.
 
-* Ruby version
+You may need to run `gem install bundler` first, and then `bundle install` should install all the libraries being used.
 
-* System dependencies
+Once that's done, `rake db:create db:migrate`.
 
-* Configuration
+From there, you should be able to `rails s` and then visit `localhost:3000`.
 
-* Database creation
+The logic will be happening mostly in `app/services/calculation_service.rb`.
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+You can also play around in the console by just typing `rails c`.  For example, you could do `rails c`, and then try `cs = CalculationService.new(60000, 12000, 0, 1)` and then play around with the `cs` variable.
