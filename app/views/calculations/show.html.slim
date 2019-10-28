@@ -38,7 +38,7 @@
 
 .row.justify-content-center.mt-3
   .col-xs-12.col-sm-10.col-md-8.col-lg-7.col-xl-6
-    - if @total_difference > 10000
+    - if @total_difference > 0
       p.lead Under the Sanders Medicare for All plan, you would <b>save #{number_to_currency(@total_difference, precision: 0)}</b> per year!
     - elsif @total_difference == 0
       p.lead Under the Sanders Medicare for All plan, your total health care costs (considering both out of pocket spending and taxes) <b>would not change</b>.
