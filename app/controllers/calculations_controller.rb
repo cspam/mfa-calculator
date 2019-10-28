@@ -1,5 +1,8 @@
 class CalculationsController < ApplicationController
   before_action :set_calculation, only: [:show, :edit, :update, :destroy]
+  before_action :check_token, only: [:edit]
+  before_action :check_referer, only: [:update]
+  before_action :prevent, only: [:index, :delete]
 
   # GET /calculations
   # GET /calculations.json
@@ -10,22 +13,26 @@ class CalculationsController < ApplicationController
   # GET /calculations/1
   # GET /calculations/1.json
   def show
-    # NOTES: You can access the information at this point like:
-    # @calculation.annual_income
-    # @calculation.capital_gains
-    # @calculation.deduction
-    # @calculation.dependent_children
+    cs = CalculationService.new(@calculation.annual_income,
+                                @calculation.capital_gains,
+                                @calculation.deduction,
+                                @calculation.dependent_children)
 
-    # to keep controller small, we create a service object, which lives in app/services/calculation_service.rb,
-    # and put the bulk of the logic in there
-    cs = CalculationService.new(@calculation.annual_income, @calculation.capital_gains, @calculation.deduction, @calculation.dependent_children)
+    filing_type = @calculation.filing_type.to_sym
 
-    # just some demonstrative examples
-    @m4a_cost = cs.get_m4a_2020_cost
-    @current_cost = cs.get_current_hellworld_cost
+    @new_total_taxes = cs.new_total_taxes(filing_type)
+    @old_total_taxes = cs.old_total_taxes(filing_type)
+    @tax_difference = @old_total_taxes - @new_total_taxes
 
-    # these variables can now be displayed in the page just by using @the_variable_name_you_want
-    # (note that the #create action we are in renders app/views/calculations/show.html.slim)
+    @old_expenses = (12 * @calculation.monthly_insurance_premium) + @calculation.annual_out_of_pocket_costs +
+                 @calculation.annual_dental_costs + @calculation.annual_vision_costs +
+                 @calculation.annual_hearing_costs + @calculation.annual_drug_costs
+    @new_expenses = [@calculation.annual_drug_costs || 0, 200].min
+    @expenses_difference = @old_expenses - @new_expenses
+
+    @old_total = @old_total_taxes + @old_expenses
+    @new_total = @new_total_taxes + @new_expenses
+    @total_difference = @old_total - @new_total
   end
 
   # GET /calculations/new
@@ -44,7 +51,7 @@ class CalculationsController < ApplicationController
 
     respond_to do |format|
       if @calculation.save
-        format.html { redirect_to @calculation, notice: 'Calculation was successfully created.' }
+        format.html { redirect_to calculation_path(@calculation, token: @calculation.edit_token) }
         format.json { render :show, status: :created, location: @calculation }
       else
         format.html { render :new }
@@ -58,7 +65,7 @@ class CalculationsController < ApplicationController
   def update
     respond_to do |format|
       if @calculation.update(calculation_params)
-        format.html { redirect_to @calculation, notice: 'Calculation was successfully updated.' }
+        format.html { redirect_to calculation_path(@calculation, token: @calculation.edit_token) }
         format.json { render :show, status: :ok, location: @calculation }
       else
         format.html { render :edit }
@@ -85,6 +92,26 @@ class CalculationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def calculation_params
-      params.require(:calculation).permit(:annual_income, :capital_gains, :deduction, :dependent_children)
+      pp = params.require(:calculation).permit(:annual_income, :capital_gains, :deduction, :dependent_children,
+        :monthly_insurance_premium, :filing_type, :annual_out_of_pocket_costs,
+        :annual_dental_costs, :annual_vision_costs, :annual_hearing_costs, :annual_drug_costs)
+      pp[:filing_type] = params[:calculation][:filing_type].to_i if params[:calculation] && params[:calculation][:filing_type]
+      pp
+    end
+
+    def prevent
+      redirect_back(fallback_location: root_path, alert: "You're not allowed to take that action")
+    end
+
+    def check_token
+      unless params[:token] == @calculation.edit_token
+        redirect_back(fallback_location: root_path, alert: "You're not allowed to take that action")
+      end
+    end
+
+    def check_referer
+      unless request.referer.last(32) == @calculation.edit_token
+        redirect_back(fallback_location: root_path, alert: "You're not allowed to take that action")
+      end
     end
 end

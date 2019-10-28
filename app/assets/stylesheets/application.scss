@@ -16,5 +16,120 @@
 @import "font-awesome-sprockets";
 @import "font-awesome";
 
-@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,700');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,700');
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,300i;400,400i,500,700');
+
+$footer-height: 60px;
+$soft-grey-bg-color: #f5f5f5;
+
+h1, h2, h3, h4, h5, h6{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+p, div, a, button {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 300;
+}
+
+p.lead{
+  font-size: 18px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: $footer-height;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: $footer-height;
+  line-height: $footer-height; // for vertical centering
+  background-color: $soft-grey-bg-color;
+}
+
+
+body > .container-fluid {
+  padding: 55px 15px 0;
+}
+
+
+.footer > .container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.bg-soft-gray{
+  background-color: $soft-grey-bg-color;
+}
+
+.close-label{
+  margin-bottom: 0.1rem;
+  font-weight: 400;
+}
+
+.mv-2{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.text-bottom{
+  position: relative;
+  span.text-bottom-span{
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.hint-text{
+  font-size: 13px;
+  font-style: italic;
+}
+
+.link-like{
+  color: #007bff;
+  cursor: pointer;
+  &:hover{
+    text-decoration: underline;
+    color: #0056b3;
+  }
+}
+
+.radio-label{
+  font-family: 'Roboto Condensed', sans-serif;
+  margin-left: 10px;
+  vertical-align: text-top;
+}
+
+.field-has-errors{
+  color: red;
+  font-weight: 700;
+}
+
+.hidden{
+  display: none;
+}
+
+.tiny-toast-alert{
+  position: fixed;
+  top: 20px;
+  z-index: 100000;
+  width: 25%;
+  left: 37.5%;
+  right: 37.5%;
+}
+
+.alert-row{
+  background-color: #f8d7da;
+  color: #721c24;
+}

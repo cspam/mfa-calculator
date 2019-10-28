@@ -1,5 +1,9 @@
-h1 New calculation
+.row.justify-content-center.bg-soft-gray.mv-2
+  .col-5.text-center
+    h1 SANDERS MEDICARE FOR ALL COST CALCULATOR
 
-== render 'form'
+    p.lead Want to know what the <b>actual</b> difference in total costs will be for you be if the United States were to move from its current health insurance system to the #{link_to "Medicare for All plan proposed by Bernie Sanders", "https://berniesanders.com/issues/medicare-for-all/", target: "_blank"}?  Fill out just a few fields below, and we'll tell you exactly what the difference is!  It takes just a minute to fill out, and we don't collect <b>any</b> identifying information.
 
-= link_to 'Back', calculations_path
+.row.justify-content-center
+  .col-5
+    == render 'form'

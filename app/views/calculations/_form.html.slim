@@ -1,21 +1,157 @@
 = form_for @calculation do |f|
   - if @calculation.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@calculation.errors.count, "error")} prohibited this calculation from being saved:"
-      ul
+      ul.mt-3
         - @calculation.errors.full_messages.each do |message|
-          li = message
+          .alert.alert-danger = message
 
-  .field
-    = f.label :annual_income
-    = f.number_field :annual_income
-  .field
-    = f.label :capital_gains
-    = f.number_field :capital_gains
-  .field
-    = f.label :deduction
-    = f.number_field :deduction
-  .field
-    = f.label :dependent_children
-    = f.number_field :dependent_children
-  .actions = f.submit
+  .row.mt-3
+    .col-lg-6.col-sm-12
+      = f.label :filing_type, "Your tax filing status:", class: "close-label #{field_has_error?(@calculation, :filing_type)}"
+  .row.mb-3
+    .col-6
+      = f.radio_button :filing_type, Calculation.filing_types[:single], checked: @calculation.filing_type == "single"
+      = f.label :filing_type, "Single", value: Calculation.filing_types[:single], class: 'radio-label'
+    .col-6
+      = f.radio_button :filing_type, Calculation.filing_types[:married_joint], checked: @calculation.filing_type == "married_joint"
+      = f.label :filing_type, "Married (joint)", value: Calculation.filing_types[:married_joint], class: 'radio-label'
+    .col-6
+      = f.radio_button :filing_type, Calculation.filing_types[:married_single], checked: @calculation.filing_type == "married_single"
+      = f.label :filing_type, "Married (single)", value: Calculation.filing_types[:married_single], class: 'radio-label'
+    .col-6
+      = f.radio_button :filing_type, Calculation.filing_types[:head_of_household], checked: @calculation.filing_type == "head_of_household"
+      = f.label :filing_type, "Head of household", value: Calculation.filing_types[:head_of_household], class: 'radio-label'
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      .form-group
+        = f.label :annual_income, "Your annual income:", class: "close-label #{field_has_error?(@calculation, :annual_income)}"
+        = f.text_field :annual_income, class: 'form-control', pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12
+      .form-group
+        = f.label :capital_gains, "Capital gains:", class: "close-label #{field_has_error?(@calculation, :capital_gains)}"
+        = f.text_field :capital_gains, class: 'form-control', title: "This means income from stocks, bonds, real estate, investments, etc.", data: { toggle: "tooltip", placement: "right" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+
+  .row.mb-4
+    .col-lg-6.col-sm-12
+      .form-group
+        = f.label :deduction, "Total deductions:", class: "close-label #{field_has_error?(@calculation, :deduction)}"
+        = f.text_field :deduction, class: 'form-control', title: "Not sure? Enter 0 and we'll apply the standard deduction for your filing status", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12
+      .form-group
+        = f.label :dependent_children, "Number of dependent children you have:", class: "close-label #{field_has_error?(@calculation, :dependent_children)}"
+        = f.text_field :dependent_children, class: 'form-control', pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :monthly_insurance_premium, "Monthly insurance premium:", class: "close-label #{field_has_error?(@calculation, :monthly_insurance_premium)}"
+      = f.text_field :monthly_insurance_premium, class: 'form-control', id: 'monthly-insurance-premium-input', title: "This is the amount you pay monthly to your insurance company no matter what (even if you receive no medical care)", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-premium'>national average</span> or the <span class="link-like" id='use-national-90th-percentile-premium'>national 90th percentile</span> for an individual
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :annual_out_of_pocket_costs, "Yearly doctor or hospital costs:", class: "close-label #{field_has_error?(@calculation, :annual_out_of_pocket_costs)}"
+      = f.text_field :annual_out_of_pocket_costs, class: 'form-control', id: 'annual-out-of-pocket-costs-input', title: "This is the amount you paid directly to doctors or hospitals last year", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-oop'>national average</span> or the <span class="link-like" id='use-national-90th-percentile-oop'>national 90th percentile</span> for an individual
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :annual_dental_costs, "Yearly dental care costs:", class: "close-label #{field_has_error?(@calculation, :annual_dental_costs)}"
+      = f.text_field :annual_dental_costs, class: 'form-control', id: 'annual-dental-costs-input', title: "This is the total you spent on dental insurance and/or care last year", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-dental'>national average</span> for an individual
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :annual_vision_costs, "Yearly vision care costs:", class: "close-label #{field_has_error?(@calculation, :annual_vision_costs)}"
+      = f.text_field :annual_vision_costs, class: 'form-control', id: 'annual-vision-costs-input', title: "This is the total you spent on vision insurance and/or care last year", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-vision'>national average</span> for an individual
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :annual_hearing_costs, "Yearly hearing aid costs:", class: "close-label #{field_has_error?(@calculation, :annual_hearing_costs)}"
+      = f.text_field :annual_hearing_costs, class: 'form-control', id: 'annual-hearing-costs-input', title: "If you bought hearing aids last year, put the total you spent here", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-hearing'>national average</span> for a pair
+
+  .row.mb-3
+    .col-lg-6.col-sm-12
+      = f.label :annual_drug_costs, "Yearly prescription drug costs:", class: "close-label #{field_has_error?(@calculation, :annual_drug_costs)}"
+      = f.text_field :annual_drug_costs, class: 'form-control', id: 'annual-drug-costs-input', title: "This is the amount you paid for any prescription drugs last year", data: { toggle: "tooltip", placement: "left" }, pattern: '\d*', onchange: "try{setCustomValidity('')}catch(e){}", oninvalid: "setCustomValidity('Please use only numbers (no decimals, commas, or negatives)')"
+    .col-lg-6.col-sm-12 style="display: flex"
+      .hint-text style="align-self: flex-end" Not sure? Try the <span class="link-like" id='use-national-average-drug'>national average</span> for an individual
+  #disabled-button
+    span title="All fields must be completed before submitting" data-toggle="tooltip" data-placement="right" style="display: inline-block; cursor: non-allowed"
+      .actions = f.submit "Calculate", class: "btn btn-primary", id: "submit-calculation", disabled: "disabled", style: "pointer-events: none"
+  #enabled-button.hidden
+    .actions = f.submit "Calculate", class: "btn btn-primary", id: "submit-calculation"
+
+br
+br
+
+javascript:
+  document.addEventListener("turbolinks:load", function() {
+    $('#use-national-average-premium').click(function() {
+      $('#monthly-insurance-premium-input').val(185)
+    })
+
+    $('#use-national-90th-percentile-premium').click(function() {
+      $('#monthly-insurance-premium-input').val(675)
+    })
+
+    $('#use-national-average-oop').click(function() {
+      $('#annual-out-of-pocket-costs-input').val(800)
+    })
+
+    $('#use-national-90th-percentile-oop').click(function() {
+      $('#annual-out-of-pocket-costs-input').val(5000)
+    })
+
+    $('#use-national-average-dental').click(function() {
+      $('#annual-dental-costs-input').val(360)
+    })
+
+    $('#use-national-average-vision').click(function() {
+      $('#annual-vision-costs-input').val(200)
+    })
+
+    $('#use-national-average-hearing').click(function() {
+      $('#annual-hearing-costs-input').val(2700)
+    })
+
+    $('#use-national-average-drug').click(function() {
+      $('#annual-drug-costs-input').val(1020)
+    })
+
+    function updateButtonInformation() {
+      var empty = false;
+        $('input').each(function() {
+            if ($(this).val() == '') {
+                empty = true;
+            }
+        });
+
+        if(!($("input").serializeArray().find( (x) => x.name === "calculation[filing_type]"))){
+          empty = true;
+        }
+
+        if (empty) {
+          $("#enabled-button").addClass("hidden")
+          $("#disabled-button").removeClass("hidden")
+        } else {
+          $("#disabled-button").addClass("hidden")
+          $("#enabled-button").removeClass("hidden")
+        }
+    }
+
+    updateButtonInformation() // for pageload
+
+    $('input').change(function() {
+        updateButtonInformation() // for form updates
+    });
+
+    $('input').keyup(function() {
+        updateButtonInformation() // for form updates
+    });
+  })

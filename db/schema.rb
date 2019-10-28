@@ -20,6 +20,14 @@ ActiveRecord::Schema.define(version: 2019_10_19_165755) do
     t.integer "capital_gains", null: false
     t.integer "deduction", null: false
     t.integer "dependent_children", null: false
+    t.integer "monthly_insurance_premium", null: false
+    t.integer "filing_type", null: false
+    t.integer "annual_out_of_pocket_costs", null: false
+    t.integer "annual_dental_costs", null: false
+    t.integer "annual_vision_costs", null: false
+    t.integer "annual_hearing_costs", null: false
+    t.integer "annual_drug_costs", null: false
+    t.string "edit_token", limit: 32, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

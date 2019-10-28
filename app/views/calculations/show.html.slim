@@ -1,26 +1,72 @@
-p#notice = notice
+.alert.alert-success.tiny-toast-alert#link-copied.hidden Link copied!
 
-p
-  strong Annual income:
-  = @calculation.annual_income
-p
-  strong Capital gains:
-  = @calculation.capital_gains
-p
-  strong Deduction:
-  = @calculation.deduction
-p
-  strong Dependent children:
-  = @calculation.dependent_children
+.row.justify-content-center.bg-soft-gray.mv-2
+  .col-5.text-center
+    h1 SANDERS MEDICARE FOR ALL COST CALCULATOR
 
-p
-  Strong Sanders M4A 2020 costs:
-  = @m4a_cost
+.row.justify-content-center.mt-5
+  .col-lg-6.col-md-9.col-sm-12
+    p.lead Your results (based on total earnings of <b>#{number_to_currency(@calculation.annual_income + @calculation.capital_gains, precision: 0)}</b>):
 
-p
-  Strong Current hellworld costs:
-  = @current_cost
+.row.justify-content-center.mt-4
+  .col-lg-6.col-md-9.col-sm-12
+    .table-responsive.text-center
+      table.table.table-bordered.table-hover
+        thead.thead-dark
+          tr
+            th scope="col"
+            th scope="col" Current
+            th scope="col" Medicare for All
+            th scope="col" Difference
+        tbody
+          tr
+            th.bg-soft-gray scope='row' Taxes
+            td = number_to_currency(@old_total_taxes, precision: 0)
+            td = number_to_currency(@new_total_taxes, precision: 0)
+            td = number_to_currency(@tax_difference, precision: 0)
+          tr
+            th.bg-soft-gray scope='row' Medical costs
+            td = number_to_currency(@old_expenses, precision: 0)
+            td = number_to_currency(@new_expenses, precision: 0)
+            td = number_to_currency(@expenses_difference, precision: 0)
+          tr
+            th.bg-soft-gray scope='row' Total
+            td = number_to_currency(@old_total, precision: 0)
+            td = number_to_currency(@new_total, precision: 0)
+            td.table-success
+              b = number_to_currency(@total_difference, precision: 0)
 
-=> link_to 'Edit', edit_calculation_path(@calculation)
-'|
-=< link_to 'Back', calculations_path
+.row.justify-content-center.mt-3
+  .col-lg-6.col-md-9.col-sm-12
+    - if @total_difference > 10000
+      p.lead Under the Sanders Medicare for All plan, you would <b>save #{number_to_currency(@total_difference, precision: 0)}</b> per year!
+    - elsif @total_difference == 0
+      p.lead Under the Sanders Medicare for All plan, your total health care costs (considering both out of pocket spending and taxes) <b>would not change</b>.
+    - else
+      p.lead Under the Sanders Medicare for All plan, you would pay an additional #{number_to_currency(-1 * @total_difference, precision: 0)} per year with your current health care costs.
+
+    hr
+
+    p.lead Want to share your results with others?  <span class="link-like" id="copy-link">Click here to get a shareable link!</span>
+    - if params[:token] == @calculation.edit_token
+      p.lead Curious what would happen if something changed? #{link_to "Click here to edit your inputs", edit_calculation_path(@calculation, token: @calculation.edit_token)}.
+
+javascript:
+  document.addEventListener("turbolinks:load", function() {
+    $('#copy-link').click(function(){
+      var $temp = $("<input>");
+      $("body").append($temp);
+      var path = "#{ request.base_url + calculation_path(@calculation) }"
+      $temp.val( path ).select();
+      document.execCommand("copy");
+      $temp.remove();
+
+      $("#link-copied").removeClass("hidden")
+      setTimeout(function() {
+        $("#link-copied").fadeOut(1500, function(){
+          $("#link-copied").addClass("hidden")
+          $("#link-copied").css("display", "")
+        })
+      }, 1500)
+    })
+  })
