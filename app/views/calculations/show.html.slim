@@ -1,15 +1,15 @@
 .alert.alert-success.tiny-toast-alert#link-copied.hidden Link copied!
 
 .row.justify-content-center.bg-soft-gray.mv-2
-  .col-lg-5.col-md-9.col-sm-12.text-center
+  .col-xs-12.col-sm-10.col-md-8.col-lg-7.col-xl-5.text-center
     h1 SANDERS MEDICARE FOR ALL COST CALCULATOR
 
 .row.justify-content-center.mt-5
-  .col-lg-6.col-md-9.col-sm-12
+  .col-xs-12.col-sm-10.col-md-8.col-lg-7.col-xl-6
     p.lead Your results (based on total earnings of <b>#{number_to_currency(@calculation.annual_income + @calculation.capital_gains, precision: 0)}</b>):
 
 .row.justify-content-center.mt-4
-  .col-lg-6.col-md-9.col-sm-12
+  .col-xs-12.col-sm-10.col-md-8.col-lg-7.col-xl-6
     .table-responsive.text-center
       table.table.table-bordered.table-hover
         thead.thead-dark
@@ -37,7 +37,7 @@
               b = number_to_currency(@total_difference, precision: 0)
 
 .row.justify-content-center.mt-3
-  .col-lg-6.col-md-9.col-sm-12
+  .col-xs-12.col-sm-10.col-md-8.col-lg-7.col-xl-6
     - if @total_difference > 10000
       p.lead Under the Sanders Medicare for All plan, you would <b>save #{number_to_currency(@total_difference, precision: 0)}</b> per year!
     - elsif @total_difference == 0
