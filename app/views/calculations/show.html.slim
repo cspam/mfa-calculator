@@ -47,7 +47,7 @@
 
     hr
 
-    p.lead Want to share your results with others?  <span class="link-like" id="copy-link">Click here to get a shareable link!</span>
+    p.lead Want to share these results with others?  <span class="link-like" id="copy-link">Click here to get a shareable link!</span>
     - if params[:token] == @calculation.edit_token
       p.lead Curious what would happen if something changed? #{link_to "Click here to edit your inputs", edit_calculation_path(@calculation, token: @calculation.edit_token)}.
 
